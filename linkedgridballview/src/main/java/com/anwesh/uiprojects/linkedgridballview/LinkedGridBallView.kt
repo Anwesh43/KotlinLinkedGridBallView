@@ -131,15 +131,23 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
             paint.color = Color.parseColor("#311B92")
             paint.strokeWidth = Math.min(w, h) / 80
             paint.strokeCap = Paint.Cap.ROUND
+            prev?.draw(canvas, paint)
             for (i in 0..GRID_NODES - 1) {
                 canvas.save()
-                canvas.translate(this.i * xGap, this.i * yGap + yGap * this.state.scales[0])
+                canvas.translate((i + 1) * xGap, r + this.i * yGap + yGap * this.state.scales[0])
+                if (this.i != 0) {
+                    canvas.drawLine(0f, -yGap * this.state.scales[0], 0f, 0f, paint)
+                }
                 canvas.drawCircle(0f, 0f, r, paint)
                 if (i != GRID_NODES - 1) {
                     canvas.drawLine(0f, 0f, xGap * this.state.scales[1], 0f, paint)
                 }
                 canvas.restore()
             }
+        }
+
+        init {
+            addNeighbor()
         }
     }
 
