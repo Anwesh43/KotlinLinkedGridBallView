@@ -6,9 +6,12 @@ package com.anwesh.uiprojects.linkedgridballview
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.view.MotionEvent
+
+val GRID_NODES : Int = 5
 
 class LinkedGridBallView(ctx : Context) : View(ctx) {
 
@@ -77,6 +80,60 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
                 } catch (ex : Exception) {
 
                 }
+            }
+        }
+    }
+
+    data class GridNode (var i : Int, val state : State = State()) {
+
+        private var next : GridNode? = null
+
+        private var prev : GridNode? = null
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun addNeighbor() {
+            if (i < GRID_NODES - 1) {
+                next = GridNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : GridNode {
+            var curr : GridNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val xGap : Float = (0.8f * w) / GRID_NODES
+            val yGap : Float = (0.8f * h) / GRID_NODES
+            val r : Float = Math.min(w, h) / 30
+            paint.color = Color.parseColor("#311B92")
+            paint.strokeWidth = Math.min(w, h) / 80
+            paint.strokeCap = Paint.Cap.ROUND
+            for (i in 0..GRID_NODES - 1) {
+                canvas.save()
+                canvas.translate(this.i * xGap, this.i * yGap + yGap * this.state.scales[0])
+                canvas.drawCircle(0f, 0f, r, paint)
+                if (i != GRID_NODES - 1) {
+                    canvas.drawLine(0f, 0f, xGap * this.state.scales[1], 0f, paint)
+                }
+                canvas.restore()
             }
         }
     }
