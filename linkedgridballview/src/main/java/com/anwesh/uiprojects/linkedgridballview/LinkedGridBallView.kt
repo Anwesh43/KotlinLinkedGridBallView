@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedgridballview
  * Created by anweshmishra on 02/07/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -191,6 +192,14 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
             linkedGridBall.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedGridBallView {
+            val view : LinkedGridBallView = LinkedGridBallView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
