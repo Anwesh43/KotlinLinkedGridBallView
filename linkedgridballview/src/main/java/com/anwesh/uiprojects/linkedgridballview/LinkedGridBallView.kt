@@ -163,4 +163,32 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedGridBallView) {
+
+        private var animator : Animator = Animator(view)
+
+        private var linkedGridBall : LinkedGridBall = LinkedGridBall(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            linkedGridBall.draw(canvas, paint)
+            animator.update {
+                linkedGridBall.update {j, scale ->
+                    animator.stop()
+                    when(scale) {
+                        1f -> {
+
+                        }
+                    }
+                }
+            }
+        }
+
+        fun handleTap() {
+            linkedGridBall.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
