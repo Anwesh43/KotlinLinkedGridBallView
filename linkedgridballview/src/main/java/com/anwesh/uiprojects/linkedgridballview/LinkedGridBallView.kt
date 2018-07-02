@@ -20,6 +20,12 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
 
     private val renderer : Renderer = Renderer(this)
 
+    var onCompleteListener : OnCompletionListener? = null
+
+    fun addOnCompleteListener(onComplete: (Int) -> Unit, onReset: (Int) -> Unit) {
+        onCompleteListener = OnCompletionListener(onComplete, onReset)
+    }
+
     override fun onDraw(canvas : Canvas) {
         renderer.render(canvas, paint)
     }
@@ -189,7 +195,10 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
                     animator.stop()
                     when(scale) {
                         1f -> {
-
+                            view.onCompleteListener?.onComplete?.invoke(j)
+                        }
+                        0f -> {
+                            view.onCompleteListener?.onReset?.invoke(j)
                         }
                     }
                 }
@@ -210,4 +219,6 @@ class LinkedGridBallView(ctx : Context) : View(ctx) {
             return view
         }
     }
+
+    data class OnCompletionListener(var onComplete : (Int) -> Unit, var onReset : (Int) -> Unit)
 }
